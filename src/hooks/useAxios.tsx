@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import axios from '../axios'
 import { ResponseType } from '../types/types'
 
-const useAxios = ({ endpoint, page }: useAxiosProps) => {
+const useAxios = ({ endpoint }: useAxiosProps) => {
   const [data, setData] = useState<ResponseType>()
-  const [nextPage, setNextPage] = useState<number>(page)
+  const [nextPage, setNextPage] = useState<number>()
   useEffect(() => {
     const fetchData = async () => {
       const { data }: { data: ResponseType } = await axios.get(endpoint, {
         params: {
-          page: page,
+          page: nextPage,
         },
       })
       setData(data)
@@ -17,12 +17,11 @@ const useAxios = ({ endpoint, page }: useAxiosProps) => {
     }
     fetchData()
   }, [])
-  return { data, nextPage }
+  return { data, nextPage, setNextPage }
 }
 
 export default useAxios
 
 type useAxiosProps = {
   endpoint: string
-  page: number
 }

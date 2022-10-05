@@ -1,16 +1,21 @@
 import useAxios from './hooks/useAxios'
-
+import { resources, routes } from './Routes/routes'
+import { Routes, Route, Link } from 'react-router-dom'
 function App() {
-  const { data } = useAxios({ endpoint: '/starships', page: 3 })
-  console.log(data)
+  const { data, setNextPage } = useAxios({ endpoint: '/starships' })
   return (
     <div>
-      <h1>Star Wars</h1>
-      <ul>
-        {data?.results.map((starship: any) => (
-          <li key={starship.name}>{starship.name}</li>
+      <h1>Available resources</h1>
+      {resources.map(r => (
+        <Link to={`/${r.toLowerCase()}`} key={r}>
+          {r}
+        </Link>
+      ))}
+      <Routes>
+        {routes.map(r => (
+          <Route key={r.path} path={r.path} element={<r.component />} />
         ))}
-      </ul>
+      </Routes>
     </div>
   )
 }
