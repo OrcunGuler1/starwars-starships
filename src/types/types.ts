@@ -1,17 +1,20 @@
 export type ResponseType = {
-  count: number
-  next: string | null
-  previous: string | null
-  results: ResultsType
+  data: {
+    count: number
+    next: string | null
+    previous: string | null
+    results: ResultsType[]
+  }
 }
-
-export type ResultsType =
-  | Film[]
-  | Person[]
-  | Planet[]
-  | Specie[]
-  | Starship[]
-  | Vehicle[]
+export type SearchResultsType = {
+  films: Film[]
+  people: Person[]
+  planets: Planet[]
+  species: Specie[]
+  starships: Starship[]
+  vehicles: Vehicle[]
+}
+export type ResultsType = Film | Person | Planet | Specie | Starship | Vehicle
 
 type Film = {
   characters: string[]

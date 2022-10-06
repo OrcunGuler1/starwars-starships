@@ -1,13 +1,11 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter as Router } from 'react-router-dom'
-import App from './App'
+import { RouterProvider } from 'react-router-dom'
+import { routes } from './routes/routes'
 import './styles/styles.scss'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <Router>
-        <App />
-      </Router>
+    <RouterProvider router={routes} />
   </React.StrictMode>,
 )
