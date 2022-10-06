@@ -3,7 +3,10 @@ import { resources, routes } from './Routes/routes'
 import { Routes, Route, Link } from 'react-router-dom'
 import Header from './Components/Header/Header'
 function App() {
-  // const { data, setNextPage } = useAxios()
+  const { data, nextPage, getNextPage, prevPage, getPrevPage } = useAxios({
+    endpoint: resources[0].toLowerCase(),
+  })
+  console.log('data', data)
   return (
     <div>
       <Header>Available resources</Header>
@@ -14,6 +17,8 @@ function App() {
           </Link>
         ))}
       </div>
+      <button onClick={() => getNextPage(nextPage || 0)}>Next</button>
+      <button onClick={() => getPrevPage(prevPage || 0)}>Prev</button>
       <Routes>
         {routes.map(r => (
           <Route key={r.path} path={r.path} element={<r.component />} />

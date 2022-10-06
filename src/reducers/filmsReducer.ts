@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-type Film = {
+export type Film = {
   characters: string[]
   created: string
   director: string
