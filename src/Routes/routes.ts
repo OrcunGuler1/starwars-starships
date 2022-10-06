@@ -1,8 +1,8 @@
 import { AvailableResources } from '../constants'
 import pages from '../pages'
-export const resources = (
-  Object.keys(AvailableResources) as Array<keyof typeof AvailableResources>
-).map(r => r)
+export const resources = Object.keys(AvailableResources) as Array<
+  keyof typeof AvailableResources
+>
 
 export const routes = [
   {

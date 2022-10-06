@@ -1,30 +1,29 @@
-import useAxios from './hooks/useAxios'
 import { resources, routes } from './Routes/routes'
 import { Routes, Route, Link } from 'react-router-dom'
 import Header from './Components/Header/Header'
+import { Suspense, useState } from 'react'
 function App() {
-  const { data, nextPage, getNextPage, prevPage, getPrevPage } = useAxios({
-    endpoint: resources[0].toLowerCase(),
-  })
-  console.log('data', data)
   return (
-    <div>
-      <Header>Available resources</Header>
-      <div className="home-links">
-        {resources.map(r => (
-          <Link to={`/${r.toLowerCase()}`} key={r}>
-            {r}
-          </Link>
-        ))}
-      </div>
-      <button onClick={() => getNextPage(nextPage || 0)}>Next</button>
-      <button onClick={() => getPrevPage(prevPage || 0)}>Prev</button>
-      <Routes>
-        {routes.map(r => (
-          <Route key={r.path} path={r.path} element={<r.component />} />
-        ))}
-      </Routes>
-    </div>
+    <>
+      <nav className="main-nav">
+        <Header>Available resources</Header>
+        <div className="home-links">
+          {resources.map(r => (
+            <Link to={`/${r.toLowerCase()}`} key={r} className="home-link">
+              {r}
+            </Link>
+          ))}
+        </div>
+      </nav>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {routes.map(r => (
+            <Route key={r.path} path={r.path} element={<r.component />} />
+          ))}
+        </Routes>
+      </Suspense>
+    </>
   )
 }
 
