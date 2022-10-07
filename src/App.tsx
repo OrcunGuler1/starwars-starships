@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <nav className="bg-black flex justify-between py-8 px-8">
-        <img src="SWLogo.svg" alt="Star Wars Logo" className="w-24" />
+        <img src="/SWLogo.svg" alt="Star Wars Logo" className="w-24" />
         <LiveSearch query={query} setQuery={setQuery} />
       </nav>
       <div className="flex justify-between px-8 py-8 ">

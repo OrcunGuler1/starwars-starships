@@ -19,6 +19,11 @@ export const routes = createBrowserRouter([
         return {
           path: `${resource.toLowerCase()}`,
           name: resource,
+          loader: ({ request }: LoaderFunctionArgs) =>
+            axiosInstance
+              .get(new URL(request.url).pathname)
+              .then(res => res.data),
+
           element: <Elem />,
         }
       }),

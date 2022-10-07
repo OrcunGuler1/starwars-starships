@@ -1,10 +1,11 @@
 export type ResponseType = {
-  data: {
-    count: number
-    next: string | null
-    previous: string | null
-    results: ResultsType[]
-  }
+  data: Data
+}
+export type Data = {
+  count: number
+  next: string | null
+  previous: string | null
+  results: ResultsType[]
 }
 export type SearchResultsType = {
   films: Film[]

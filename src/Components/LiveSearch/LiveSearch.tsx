@@ -73,7 +73,7 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
         onChange={handleChange}
         placeholder={`Search ${placeholder}`}
       />
-      {!loading && results && (
+      {results && query && (
         <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto">
           {Object.entries(results).map(
             ([key, entry], i) =>
@@ -96,6 +96,11 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
                 </div>
               ),
           )}
+        </div>
+      )}
+      {loading && query && (
+        <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto">
+          <h2 className="font-semibold text-lg text-center">Loading...</h2>
         </div>
       )}
     </div>
