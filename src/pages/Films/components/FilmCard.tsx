@@ -1,4 +1,4 @@
-import { Film } from '../../../types/types'
+import type { Film } from '../../../types/types'
 
 const FilmCard = (film: Film) => {
   return (

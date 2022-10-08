@@ -17,42 +17,39 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
     starships: [],
     vehicles: [],
   })
+  const [focus, setFocus] = useState(false)
   const [loading, setLoading] = useState(true)
   const resources = Object.keys(AvailableResources) as Array<
     keyof typeof AvailableResources
   >
-  console.log(results)
+
+  const dataAvailable = () => {
+    return Object.values(results).some(arr => arr.length > 0)
+  }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true)
     setQuery(e.target.value)
-    setTimeout(() => {
-      resources.map(resource => {
-        axiosInstance
-          .get(`/${resource.toLowerCase()}/?search=${e.target.value}`)
-          .then(res =>
-            setResults(prev => ({
-              ...prev,
-              [resource]: res.data.results,
-            })),
-          )
-          .catch(e => {
-            if (axios.isCancel(e)) return
-            console.log(e)
-          })
-          .finally(() => {
-            setLoading(false)
-          })
-      })
-    }, 1000)
+    resources.map(resource => {
+      axiosInstance
+        .get(`/${resource.toLowerCase()}/?search=${e.target.value}`)
+        .then(res =>
+          setResults(prev => ({
+            ...prev,
+            [resource]: res.data.results,
+          })),
+        )
+        .catch(e => {
+          if (axios.isCancel(e)) return
+          console.log(e)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    })
   }
 
   const handleSelect = (id: string, resource: AvailableResources) => {
-    navigate(`/${resource.toLowerCase()}/${id}`, {
-      state: {
-        id,
-        resource,
-      },
-    })
+    navigate(`/${resource.toLowerCase()}/${id}`)
   }
 
   useEffect(() => {
@@ -71,20 +68,35 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
         type="text"
         value={query}
         onChange={handleChange}
+        onFocus={() => setFocus(true)}
         placeholder={`Search ${placeholder}`}
+        onBlur={() => setFocus(false)}
       />
-      {results && query && (
-        <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto">
+      {dataAvailable() && query && !loading && focus && (
+        <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto rounded hide-scrollbar">
           {Object.entries(results).map(
             ([key, entry], i) =>
               entry.length > 0 && (
                 <div key={i}>
-                  <h2 className="font-semibold text-lg text-center">
-                    {AvailableResources[
-                      key as keyof typeof AvailableResources
-                    ].toUpperCase()}
-                  </h2>
-                  <ul className="flex-col place-items-center m-0">
+                  <button
+                    className="cursor-pointer hover:bg-black hover:bg-opacity-10 py-2 w-full text-center rounded-l "
+                    onClick={() =>
+                      navigate(
+                        `${
+                          AvailableResources[
+                            key as keyof typeof AvailableResources
+                          ]
+                        }`,
+                      )
+                    }
+                  >
+                    <h2 className="font-semibold text-lg text-center">
+                      {AvailableResources[
+                        key as keyof typeof AvailableResources
+                      ].toUpperCase()}
+                    </h2>
+                  </button>
+                  <ul className="flex-col place-items-center m-0 ">
                     {entry.map((item, i) => (
                       <SearchCard
                         key={i}
@@ -98,9 +110,14 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
           )}
         </div>
       )}
-      {loading && query && (
+      {loading && query && focus && (
         <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto">
           <h2 className="font-semibold text-lg text-center">Loading...</h2>
+        </div>
+      )}
+      {!dataAvailable() && query && !loading && focus && (
+        <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto">
+          <h2 className="font-semibold text-lg text-center">No results</h2>
         </div>
       )}
     </div>
