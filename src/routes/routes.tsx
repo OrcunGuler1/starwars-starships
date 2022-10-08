@@ -22,7 +22,8 @@ export const routes = createBrowserRouter([
           loader: ({ request }: LoaderFunctionArgs) =>
             axiosInstance
               .get(new URL(request.url).pathname)
-              .then(res => res.data),
+              .then(res => res.data)
+              .catch(err => err),
 
           element: <Elem />,
         }
