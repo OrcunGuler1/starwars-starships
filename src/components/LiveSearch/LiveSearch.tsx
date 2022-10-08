@@ -26,7 +26,7 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
   const dataAvailable = () => {
     return Object.values(results).some(arr => arr.length > 0)
   }
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true)
     setQuery(e.target.value)
@@ -74,7 +74,7 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
         onBlur={() => setFocus(false)}
       />
       {dataAvailable() && query && !loading && focus && (
-        <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto rounded hide-scrollbar">
+        <div className="absolute mt-1 w-64 p-2 bg-slate-600 shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto rounded hide-scrollbar">
           {Object.entries(results).map(
             ([key, entry], i) =>
               entry.length > 0 && (
