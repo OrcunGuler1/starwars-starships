@@ -1,4 +1,3 @@
-import React from 'react'
 import { Film } from '../../../types/types'
 
 const FilmDetails = (film: Film) => {

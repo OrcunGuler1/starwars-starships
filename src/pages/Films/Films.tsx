@@ -37,7 +37,7 @@ const Films = () => {
           </button>
         </div>
       </div>
-      <div className="grid w-full grid-cols-4 gap-5">
+      <div className="grid w-full lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-5">
         <Suspense fallback={<>Loading..</>}>
           <Await
             resolve={results}

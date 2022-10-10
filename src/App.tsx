@@ -30,7 +30,7 @@ function App() {
 
       <section className="flex w-full flex-col items-center gap-5 px-8 py-8 text-gray-50">
         <Header className="text-3xl font-semibold">Available resources</Header>
-        <div className="">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-6">
           {resources.map(r => (
             <Link
               to={`/${r.toLowerCase()}`}
@@ -42,13 +42,7 @@ function App() {
           ))}
         </div>
         <div>
-          {homeRoute && (
-            <LiveSearch
-              query={query}
-              setQuery={setQuery}
-              className=" w-full "
-            />
-          )}
+          {homeRoute && <LiveSearch query={query} setQuery={setQuery} />}
         </div>
       </section>
       <Outlet />

@@ -5,7 +5,7 @@ import axios from 'axios'
 import { SearchResultsType } from '../../types/types'
 import SearchCard from './components/SearchCard'
 import { useNavigate } from 'react-router-dom'
-const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
+const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   const navigate = useNavigate()
   const [placeholder, setPlaceholder] = useState('')
   const [ctr, setCtr] = useState(0)
@@ -63,9 +63,9 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
   }, [ctr])
 
   return (
-    <div className="w-full; relative">
+    <div className="relative flex flex-row">
       <input
-        className="focus:shadow-outline h-10 w-64 rounded-full bg-white px-5 pr-10 text-lg text-gray-700 placeholder-gray-400 shadow transition focus:outline-none"
+        className="focus:shadow-outline  h-10 w-full self-end rounded-full bg-white px-5 pr-10 text-lg text-gray-700 placeholder-gray-400 shadow transition focus:outline-none"
         type="text"
         value={query}
         onChange={handleChange}
@@ -129,5 +129,4 @@ export default LiveSearch
 type LiveSearchProps = {
   query: string
   setQuery: Dispatch<SetStateAction<string>>
-  className?: string
 }
