@@ -1,13 +1,15 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import { AvailableResources } from '../../constants'
+import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../axios'
-import axios from 'axios'
+import { AvailableResources } from '../../constants'
+import { resources } from '../../routes/routes'
 import { SearchResultsType } from '../../types/types'
 import SearchCard from './components/SearchCard'
-import { useNavigate } from 'react-router-dom'
+
 const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   const navigate = useNavigate()
-  const [placeholder, setPlaceholder] = useState('')
+  const [placeholder, setPlaceholder] =
+    useState<Partial<keyof typeof AvailableResources>>('Films')
   const [ctr, setCtr] = useState(0)
   const [results, setResults] = useState<SearchResultsType>({
     films: [],
@@ -19,9 +21,6 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   })
   const [focus, setFocus] = useState(false)
   const [loading, setLoading] = useState(true)
-  const resources = Object.keys(AvailableResources) as Array<
-    keyof typeof AvailableResources
-  >
 
   const dataAvailable = () => {
     return Object.values(results).some(arr => arr.length > 0)
@@ -56,16 +55,25 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholder(resources[ctr])
+      console.log(ctr)
       setCtr(prev => (prev + 1) % resources.length)
-    }, 2000)
+    }, 1000)
     if (results) clearInterval(interval)
     return () => clearInterval(interval)
   }, [ctr])
 
+  console.log(placeholder)
+
   return (
-    <div className="relative flex flex-row">
+    <div
+      className={
+        'relative flex flex-row' +
+        (window.location.pathname === '/' && ' w-1/2 translate-x-1/2')
+      }
+      onBlur={() => setFocus(false)}
+    >
       <input
-        className="focus:shadow-outline  h-10 w-full self-end rounded-full bg-white px-5 pr-10 text-lg text-gray-700 placeholder-gray-400 shadow transition focus:outline-none"
+        className="focus:shadow-outline h-10 w-full self-end rounded-full bg-white px-5 pr-10 text-lg text-gray-700 placeholder-gray-400 shadow transition focus:outline-none"
         type="text"
         value={query}
         onChange={handleChange}
@@ -73,7 +81,7 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
         placeholder={`Search ${placeholder}`}
       />
       {dataAvailable() && query && !loading && focus && (
-        <div className="hide-scrollbar absolute mt-1 max-h-56 w-64 overflow-y-auto rounded rounded-bl rounded-br bg-slate-600 p-2 shadow-lg">
+        <div className="hide-scrollbar absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded rounded-bl rounded-br bg-slate-600 p-2 shadow-lg">
           {Object.entries(results).map(
             ([key, entry], i) =>
               entry.length > 0 && (

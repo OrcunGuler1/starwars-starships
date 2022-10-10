@@ -1,6 +1,7 @@
 import { get, has } from 'lodash'
 import { FC } from 'react'
 import type { AvailableResources } from '../../../constants'
+import { getUrlPaths } from '../../../helpers/getUrlPaths'
 import type {
   Film,
   Person,
@@ -15,13 +16,12 @@ type SearchCardProps = {
   handleSelect: (id: string, resource: AvailableResources) => void
 }
 const SearchCard: FC<SearchCardProps> = ({ item, handleSelect }) => {
-  const params = new URL(item.url as string).pathname.split('/')
-  const resource = params[params.length - 3] as AvailableResources
-  const id = params[params.length - 2]
+  const { id, resource } = getUrlPaths(item.url as string)
+
   return (
     <button
       className="w-full cursor-pointer rounded-l py-2 text-center hover:bg-black hover:bg-opacity-10"
-      onClick={() => handleSelect(id, resource)}
+      onClick={() => handleSelect(id, resource as AvailableResources)}
     >
       {has(item, 'name') ? get(item, 'name') : get(item, 'title')}
     </button>

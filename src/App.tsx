@@ -27,24 +27,27 @@ function App() {
         />
         {!homeRoute && <LiveSearch query={query} setQuery={setQuery} />}
       </nav>
-
-      <section className="flex w-full flex-col items-center gap-5 px-8 py-8 text-gray-50">
-        <Header className="text-3xl font-semibold">Available resources</Header>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-6">
-          {resources.map(r => (
-            <Link
-              to={`/${r.toLowerCase()}`}
-              key={r}
-              className="m-2 text-2xl font-semibold"
-            >
-              {r}
-            </Link>
-          ))}
-        </div>
-        <div>
-          {homeRoute && <LiveSearch query={query} setQuery={setQuery} />}
-        </div>
-      </section>
+      {homeRoute && (
+        <section className="flex w-full flex-col items-center gap-5 px-8 py-8 text-gray-50">
+          <Header className="text-3xl font-semibold">
+            Available resources
+          </Header>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-6">
+            {resources.map(r => (
+              <Link
+                to={`/${r.toLowerCase()}`}
+                key={r}
+                className="m-2 text-2xl font-semibold"
+              >
+                {r}
+              </Link>
+            ))}
+          </div>
+          <div className="w-full">
+            <LiveSearch query={query} setQuery={setQuery} />
+          </div>
+        </section>
+      )}
       <Outlet />
     </div>
   )
