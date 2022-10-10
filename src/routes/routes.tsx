@@ -5,6 +5,7 @@ import { AvailableResources } from '../constants'
 import pages from '../pages'
 import Details from '../pages/Details/Details'
 import { LoaderFunctionArgs } from 'react-router-dom'
+import Error from '../components/Error/Error'
 export const resources = Object.keys(AvailableResources) as Array<
   keyof typeof AvailableResources
 >
@@ -24,7 +25,7 @@ export const routes = createBrowserRouter([
               .get(new URL(request.url).pathname)
               .then(res => res.data)
               .catch(err => err),
-
+          errorElement: <Error />,
           element: <Elem />,
         }
       }),

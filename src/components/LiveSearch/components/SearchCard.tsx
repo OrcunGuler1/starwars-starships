@@ -20,7 +20,7 @@ const SearchCard: FC<SearchCardProps> = ({ item, handleSelect }) => {
   const id = params[params.length - 2]
   return (
     <button
-      className="cursor-pointer hover:bg-black hover:bg-opacity-10 py-2 w-full text-center rounded-l"
+      className="w-full cursor-pointer rounded-l py-2 text-center hover:bg-black hover:bg-opacity-10"
       onClick={() => handleSelect(id, resource)}
     >
       {has(item, 'name') ? get(item, 'name') : get(item, 'title')}

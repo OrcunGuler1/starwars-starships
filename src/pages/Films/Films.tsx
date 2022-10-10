@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useLoaderData } from 'react-router-dom'
+import { Suspense, useState } from 'react'
+import { Await, useLoaderData } from 'react-router-dom'
 import { Data, Film } from '../../types/types'
 import FilmCard from './components/FilmCard'
 
@@ -7,39 +7,50 @@ const Films = () => {
   const { results } = useLoaderData() as Data
   const [sort, setSort] = useState<'episode' | 'date'>('episode')
 
+  const sortData = (data: Film[]) => {
+    if (sort === 'episode') {
+      return data.sort((a, b) => a.episode_id - b.episode_id)
+    } else {
+      return data.sort((a, b) => {
+        const dateA = new Date(a.release_date)
+        const dateB = new Date(b.release_date)
+        return dateA.getTime() - dateB.getTime()
+      })
+    }
+  }
+
   return (
     <div className="container mx-auto flex flex-col">
-      <div className="self-end mb-8 w-full flex flex-row justify-end gap-8">
+      <div className="mb-8 flex w-full flex-row justify-end gap-8 self-end">
         <div className="flex flex-row gap-3">
           <button
-            className="bg-slate-700 text-white rounded p-2 text-center"
+            className="rounded bg-slate-700 p-2 text-center text-white"
             onClick={() => setSort('episode')}
           >
             Sort by episode
           </button>
           <button
-            className="bg-slate-700 text-white rounded p-2 text-center"
+            className="rounded bg-slate-700 p-2 text-center text-white"
             onClick={() => setSort('date')}
           >
             Sort by date
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-4 w-full gap-5">
-        {results &&
-          sort === 'episode' &&
-          (results as Film[])
-            .sort((a, b) => a.episode_id - b.episode_id)
-            .map(film => <FilmCard key={film.episode_id} {...film}></FilmCard>)}
-        {results &&
-          sort === 'date' &&
-          (results as Film[])
-            .sort((a, b) => {
-              const dateA = new Date(a.release_date)
-              const dateB = new Date(b.release_date)
-              return dateA.getTime() - dateB.getTime()
-            })
-            .map(film => <FilmCard key={film.episode_id} {...film}></FilmCard>)}
+      <div className="grid w-full grid-cols-4 gap-5">
+        <Suspense fallback={<>Loading..</>}>
+          <Await
+            resolve={results}
+            children={(results: Film[]) => (
+              <>
+                {sortData(results).map(film => (
+                  <FilmCard key={film.episode_id} {...film}></FilmCard>
+                ))}
+              </>
+            )}
+            errorElement={<div>Something went wrong</div>}
+          />
+        </Suspense>
       </div>
     </div>
   )

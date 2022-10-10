@@ -40,7 +40,6 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
           })),
         )
         .catch(e => {
-          if (axios.isCancel(e)) return
           console.log(e)
         })
         .finally(() => {
@@ -51,6 +50,7 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
 
   const handleSelect = (id: string, resource: AvailableResources) => {
     navigate(`/${resource.toLowerCase()}/${id}`)
+    setFocus(false)
   }
 
   useEffect(() => {
@@ -63,24 +63,23 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
   }, [ctr])
 
   return (
-    <div className="relative w-full;">
+    <div className="w-full; relative">
       <input
-        className="w-64 h-10 px-5 pr-10 text-lg text-gray-700 placeholder-gray-400 bg-white rounded-full shadow focus:outline-none focus:shadow-outline transition"
+        className="focus:shadow-outline h-10 w-64 rounded-full bg-white px-5 pr-10 text-lg text-gray-700 placeholder-gray-400 shadow transition focus:outline-none"
         type="text"
         value={query}
         onChange={handleChange}
         onFocus={() => setFocus(true)}
         placeholder={`Search ${placeholder}`}
-        onBlur={() => setFocus(false)}
       />
       {dataAvailable() && query && !loading && focus && (
-        <div className="absolute mt-1 w-64 p-2 bg-slate-600 shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto rounded hide-scrollbar">
+        <div className="hide-scrollbar absolute mt-1 max-h-56 w-64 overflow-y-auto rounded rounded-bl rounded-br bg-slate-600 p-2 shadow-lg">
           {Object.entries(results).map(
             ([key, entry], i) =>
               entry.length > 0 && (
                 <div key={i}>
                   <button
-                    className="cursor-pointer hover:bg-black hover:bg-opacity-10 py-2 w-full text-center rounded-l "
+                    className="w-full cursor-pointer rounded-l py-2 text-center hover:bg-black hover:bg-opacity-10 "
                     onClick={() =>
                       navigate(
                         `${
@@ -91,13 +90,13 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
                       )
                     }
                   >
-                    <h2 className="font-semibold text-lg text-center">
+                    <h2 className="text-center text-lg font-semibold">
                       {AvailableResources[
                         key as keyof typeof AvailableResources
                       ].toUpperCase()}
                     </h2>
                   </button>
-                  <ul className="flex-col place-items-center m-0 ">
+                  <ul className="m-0 flex-col place-items-center ">
                     {entry.map((item, i) => (
                       <SearchCard
                         key={i}
@@ -112,13 +111,13 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery, className }) => {
         </div>
       )}
       {loading && query && focus && (
-        <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto">
-          <h2 className="font-semibold text-lg text-center">Loading...</h2>
+        <div className="absolute mt-1 max-h-56 w-64 overflow-y-auto rounded-bl rounded-br bg-white p-2 shadow-lg">
+          <h2 className="text-center text-lg font-semibold">Loading...</h2>
         </div>
       )}
       {!dataAvailable() && query && !loading && focus && (
-        <div className="absolute mt-1 w-64 p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto">
-          <h2 className="font-semibold text-lg text-center">No results</h2>
+        <div className="absolute mt-1 max-h-56 w-64 overflow-y-auto rounded-bl rounded-br bg-white p-2 shadow-lg">
+          <h2 className="text-center text-lg font-semibold">No results</h2>
         </div>
       )}
     </div>
