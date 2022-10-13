@@ -25,10 +25,10 @@ const PlanetCard: FC<PlanetCardProps> = ({ planet, url }) => {
         <h2 className="text-center">{planetData?.name}</h2>
       </header>
       <div className="mb-2 flex flex-col items-center justify-center gap-3">
-        <p className="text-center">Climate: {planetData?.climate}</p>
+        <p className="text-center capitalize">Climate: {planetData?.climate}</p>
         <p className="text-center">Population: {planetData?.population}</p>
         <p className="text-center">Diameter: {planetData?.diameter}</p>
-        <p className="text-center">Gravity: {planetData?.gravity}</p>
+        <p className="text-center capitalize">Gravity: {planetData?.gravity}</p>
       </div>
     </div>
   )
