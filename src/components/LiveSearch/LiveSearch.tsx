@@ -9,21 +9,13 @@ import SearchCard from './components/SearchCard'
 const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   const navigate = useNavigate()
   const [ctr, setCtr] = useState(0)
-  const [results, setResults] = useState<SearchResultsType>({
-    films: [],
-    people: [],
-    planets: [],
-    species: [],
-    starships: [],
-    vehicles: [],
-  })
+  const [results, setResults] = useState<SearchResultsType>()
   const [focus, setFocus] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const dataAvailable = () => {
-    return Object.values(results).some(arr => arr.length > 0)
+    return results && Object.values(results).some(arr => arr.length > 0)
   }
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true)
     setQuery(e.target.value)
@@ -31,10 +23,13 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
       axiosInstance
         .get(`/${resource.toLowerCase()}/?search=${e.target.value}`)
         .then(res =>
-          setResults(prev => ({
-            ...prev,
-            [resource]: res.data.results,
-          })),
+          setResults(
+            prev =>
+              prev && {
+                ...prev,
+                [resource]: res.data.results,
+              },
+          ),
         )
         .catch(e => {
           console.log(e)
@@ -47,16 +42,17 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
 
   const handleSelect = (id: string, resource: AvailableResources) => {
     navigate(`/${resource.toLowerCase()}/${id}`)
+    setResults(undefined)
     setFocus(false)
   }
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCtr(prev => (prev + 1) % resources.length)
-    }, 1000)
+    }, 2000)
     if (results) clearInterval(interval)
     return () => clearInterval(interval)
-  })
+  }, [])
 
   return (
     <div
@@ -75,50 +71,51 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
         placeholder={`Search ${resources[ctr]}`}
       />
       {dataAvailable() && query && !loading && focus && (
-        <div className="hide-scrollbar absolute top-full z-50 mt-1 max-h-56 w-full overflow-y-auto rounded rounded-bl rounded-br bg-slate-600 p-2 shadow-lg text-white">
-          {Object.entries(results).map(
-            ([key, entry], i) =>
-              entry.length > 0 && (
-                <div key={i}>
-                  <button
-                    className="w-full cursor-pointer rounded-l py-2 text-center hover:bg-black hover:bg-opacity-10"
-                    onClick={() =>
-                      navigate(
-                        `${
-                          AvailableResources[
-                            key as keyof typeof AvailableResources
-                          ]
-                        }`,
-                      )
-                    }
-                  >
-                    <h2 className="text-center text-lg font-semibold">
-                      {AvailableResources[
-                        key as keyof typeof AvailableResources
-                      ].toUpperCase()}
-                    </h2>
-                  </button>
-                  <ul className="m-0 flex-col place-items-center ">
-                    {entry.map((item, i) => (
-                      <SearchCard
-                        key={i}
-                        item={item}
-                        handleSelect={handleSelect}
-                      />
-                    ))}
-                  </ul>
-                </div>
-              ),
-          )}
+        <div className="hide-scrollbar absolute top-full z-50 mt-1 max-h-56 w-full overflow-y-auto rounded rounded-bl rounded-br bg-slate-600 p-2 text-white shadow-lg">
+          {results &&
+            Object.entries(results).map(
+              ([key, entry], i) =>
+                entry.length > 0 && (
+                  <div key={i}>
+                    <button
+                      className="w-full cursor-pointer rounded-l py-2 text-center hover:bg-black hover:bg-opacity-10"
+                      onClick={() =>
+                        navigate(
+                          `${
+                            AvailableResources[
+                              key as keyof typeof AvailableResources
+                            ]
+                          }`,
+                        )
+                      }
+                    >
+                      <h2 className="text-center text-lg font-semibold">
+                        {AvailableResources[
+                          key as keyof typeof AvailableResources
+                        ].toUpperCase()}
+                      </h2>
+                    </button>
+                    <ul className="m-0 flex-col place-items-center ">
+                      {entry.map((item, i) => (
+                        <SearchCard
+                          key={i}
+                          item={item}
+                          handleSelect={handleSelect}
+                        />
+                      ))}
+                    </ul>
+                  </div>
+                ),
+            )}
         </div>
       )}
       {loading && query && focus && (
-        <div className="absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded-bl rounded-br bg-slate-700 p-2 shadow-lg text-white">
+        <div className="absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded-bl rounded-br bg-slate-700 p-2 text-white shadow-lg">
           <h2 className="text-center text-lg font-semibold">Loading...</h2>
         </div>
       )}
       {!dataAvailable() && query && !loading && focus && (
-        <div className="absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded-bl rounded-br bg-slate-700 p-2 shadow-lg text-white">
+        <div className="absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded-bl rounded-br bg-slate-700 p-2 text-white shadow-lg">
           <h2 className="text-center text-lg font-semibold">No results</h2>
         </div>
       )}
