@@ -1,9 +1,15 @@
-import { has } from 'lodash'
 import { Suspense } from 'react'
 import { Await, useLoaderData } from 'react-router-dom'
+import { getUrlPaths } from '../../helpers/getUrlPaths'
 import { ResultsType } from '../../types/types'
-import FilmDetails from './components/FilmDetails'
-import OtherDetails from './components/OtherDetails'
+import {
+  FilmDetails,
+  PersonDetails,
+  PlanetDetails,
+  SpecieDetails,
+  StarshipDetails,
+  VehicleDetails,
+} from './components'
 
 const Details = () => {
   const data = useLoaderData() as ResultsType
@@ -14,13 +20,24 @@ const Details = () => {
       <Suspense fallback={<>Loading...</>}>
         <Await
           resolve={data}
-          children={data =>
-            has(data, 'title') ? (
-              <FilmDetails {...data} />
-            ) : (
-              <OtherDetails {...data} />
-            )
-          }
+          children={data => {
+            switch (getUrlPaths(data.url).resource) {
+              case 'films':
+                return <FilmDetails {...data} />
+              case 'people':
+                return <PersonDetails {...data} />
+              case 'planets':
+                return <PlanetDetails {...data} />
+              case 'species':
+                return <SpecieDetails {...data} />
+              case 'starships':
+                return <StarshipDetails {...data} />
+              case 'vehicles':
+                return <VehicleDetails {...data} />
+              default:
+                return <p>Oops something went wrong</p>
+            }
+          }}
         ></Await>
       </Suspense>
     </div>

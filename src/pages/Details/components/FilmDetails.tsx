@@ -52,9 +52,18 @@ const FilmDetails: FC<Film> = film => {
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-4">
             {planets.map(planetUrl => (
-              <PlanetCard key={planetUrl} url={planetUrl}></PlanetCard>
+              <PlanetCard key={planetUrl} url={planetUrl} />
             ))}
           </div>
+        </div>
+        <div className="mb-5">
+          <h2 className="pb-4 text-center text-2xl font-semibold">
+            Opening Crawl
+          </h2>
+          <p className="text-center text-xl font-semibold">{opening_crawl}</p>
+        </div>
+        <div>
+          <h2 className="pb-4 text-center text-2xl font-semibold">Species</h2>
         </div>
       </div>
     </section>
