@@ -1,7 +1,5 @@
-import styles from './select.module.scss'
 import type { SelectOption, SelectProps } from '../../types/types'
 import { useEffect, useRef, useState } from 'react'
-import handler from '../../helper'
 const Select = ({ multi, value, onChange, options }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [highlightIndex, setHighlightIndex] = useState(0)
@@ -31,16 +29,31 @@ const Select = ({ multi, value, onChange, options }: SelectProps) => {
   }, [isOpen])
 
   useEffect(() => {
-    const handle = (e: KeyboardEvent) =>
-      handler({
-        e,
-        options,
-        isOpen,
-        setIsOpen,
-        selectOption,
-        highlightIndex,
-        setHighlightIndex,
-      })
+    const handle = (e: KeyboardEvent) => {
+      switch (e.code) {
+        case 'Enter':
+        case 'Space':
+          setIsOpen(prev => !prev)
+          if (isOpen) selectOption(options[highlightIndex])
+          break
+        case 'ArrowUp':
+        case 'ArrowDown': {
+          if (!isOpen) {
+            setIsOpen(true)
+            break
+          }
+
+          const newValue = highlightIndex + (e.code === 'ArrowDown' ? 1 : -1)
+          if (newValue >= 0 && newValue < options.length) {
+            setHighlightIndex(newValue)
+          }
+          break
+        }
+        case 'Escape':
+          setIsOpen(false)
+          break
+      }
+    }
     containerRef.current?.addEventListener('keydown', handle)
 
     return () => {
@@ -52,11 +65,14 @@ const Select = ({ multi, value, onChange, options }: SelectProps) => {
     <div
       ref={containerRef}
       tabIndex={0}
-      className={styles.container}
+      className="relative my-5 flex min-h-full w-80 items-center gap-2 self-end rounded border border-gray-300 p-2 outline-none focus:border-blue-500 focus:outline-1"
       onClick={() => setIsOpen(prev => !prev)}
       onBlur={() => setIsOpen(false)}
     >
-      <span className={styles.value}>
+      <span className="flex flex-grow flex-wrap gap-2">
+        {value instanceof Array && value.length === 0 && (
+          <span className="text-gray-400">Select...</span>
+        )}
         {multi
           ? value?.map(v => (
               <button
@@ -65,16 +81,18 @@ const Select = ({ multi, value, onChange, options }: SelectProps) => {
                   e.stopPropagation()
                   selectOption(v)
                 }}
-                className={styles['option-badge']}
+                className="flex cursor-pointer items-center gap-1 rounded border border-gray-300 bg-none px-0.5 py-1 text-white outline-none hover:bg-gray-200 focus:bg-gray-200"
               >
                 {v.label}
-                <span className={styles['remove-btn']}>&times;</span>
+                <span className="text-xl text-white hover:text-gray-500 focus:text-gray-500">
+                  &times;
+                </span>
               </button>
             ))
           : value?.label}
       </span>
       <button
-        className={styles['clear-btn']}
+        className="cursor-pointer border-none bg-none p-0 text-white outline-none hover:text-slate-500 focus:text-slate-500"
         onClick={e => {
           e.stopPropagation()
           clearOpts()
@@ -82,16 +100,20 @@ const Select = ({ multi, value, onChange, options }: SelectProps) => {
       >
         &times;
       </button>
-      <div className={styles.divider} />
-      <div className={styles.caret} />
-      <ul className={`${styles.options} ${isOpen ? styles.open : ''}`}>
+      <div className="w-0.5 self-stretch bg-gray-400" />
+      <div className="translate-y-1/4 cursor-pointer border-y-4 border-x-4 border-transparent border-t-gray-400" />
+      <ul
+        className={`absolute left-0 top-[calc(100%-0.25rem)] z-50 m-0 max-h-60 w-full overflow-y-auto rounded border border-gray-700 bg-white p-0 ${
+          isOpen ? 'block' : 'hidden'
+        }`}
+      >
         {options.map((option, index) => (
           <li
             key={option.value}
             onMouseEnter={() => setHighlightIndex(index)}
-            className={`${styles.option} ${
-              isOptSelected(option) ? styles.selected : ''
-            } ${highlightIndex === index ? styles.highlighted : ''}`}
+            className={`cursor-pointer px-1 py-2 ${
+              isOptSelected(option) && 'bg-slate-500 text-white'
+            } ${highlightIndex === index && 'bg-slate-700 text-white'}`}
             onClick={e => {
               e.stopPropagation()
               selectOption(option)

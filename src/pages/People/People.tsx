@@ -20,6 +20,7 @@ const People = () => {
   )
   const [options, setOptions] = useState<SelectOption[]>([])
   const handleSort = (data: Person[]) => {
+    if (options.length === 0) return data
     return data.filter((person: any) =>
       options.find(opt => person.gender === opt.label),
     )

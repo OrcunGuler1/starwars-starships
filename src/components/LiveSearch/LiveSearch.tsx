@@ -8,8 +8,6 @@ import SearchCard from './components/SearchCard'
 
 const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   const navigate = useNavigate()
-  const [placeholder, setPlaceholder] =
-    useState<Partial<keyof typeof AvailableResources>>('Films')
   const [ctr, setCtr] = useState(0)
   const [results, setResults] = useState<SearchResultsType>({
     films: [],
@@ -54,15 +52,11 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPlaceholder(resources[ctr])
-      console.log(ctr)
       setCtr(prev => (prev + 1) % resources.length)
     }, 1000)
     if (results) clearInterval(interval)
     return () => clearInterval(interval)
-  }, [ctr])
-
-  console.log(placeholder)
+  })
 
   return (
     <div
@@ -78,16 +72,16 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
         value={query}
         onChange={handleChange}
         onFocus={() => setFocus(true)}
-        placeholder={`Search ${placeholder}`}
+        placeholder={`Search ${resources[ctr]}`}
       />
       {dataAvailable() && query && !loading && focus && (
-        <div className="hide-scrollbar absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded rounded-bl rounded-br bg-slate-600 p-2 shadow-lg">
+        <div className="hide-scrollbar absolute top-full z-50 mt-1 max-h-56 w-full overflow-y-auto rounded rounded-bl rounded-br bg-slate-600 p-2 shadow-lg text-white">
           {Object.entries(results).map(
             ([key, entry], i) =>
               entry.length > 0 && (
                 <div key={i}>
                   <button
-                    className="w-full cursor-pointer rounded-l py-2 text-center hover:bg-black hover:bg-opacity-10 "
+                    className="w-full cursor-pointer rounded-l py-2 text-center hover:bg-black hover:bg-opacity-10"
                     onClick={() =>
                       navigate(
                         `${
@@ -119,12 +113,12 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
         </div>
       )}
       {loading && query && focus && (
-        <div className="absolute mt-1 max-h-56 w-64 overflow-y-auto rounded-bl rounded-br bg-white p-2 shadow-lg">
+        <div className="absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded-bl rounded-br bg-slate-700 p-2 shadow-lg text-white">
           <h2 className="text-center text-lg font-semibold">Loading...</h2>
         </div>
       )}
       {!dataAvailable() && query && !loading && focus && (
-        <div className="absolute mt-1 max-h-56 w-64 overflow-y-auto rounded-bl rounded-br bg-white p-2 shadow-lg">
+        <div className="absolute top-full mt-1 max-h-56 w-full overflow-y-auto rounded-bl rounded-br bg-slate-700 p-2 shadow-lg text-white">
           <h2 className="text-center text-lg font-semibold">No results</h2>
         </div>
       )}
