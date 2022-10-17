@@ -12,9 +12,13 @@
   display: none;
 }
 
-#root{
+#root {
   min-height: 100vh;
-  &>div{
+  & > div {
     min-height: 100vh;
   }
+}
+
+.person-card:before:hover {
+  content: url('https://vignette.wikia.nocookie.net/starwars/images/3/3f/C-3PO_TLJ_Card_Trader_Award_Card.png');
 }

@@ -1,5 +1,6 @@
+import { Vehicle } from '../../../types/types'
 
-const VehicleDetails = () => {
+const VehicleDetails = (vehicle: Vehicle) => {
   return <div>VehicleDetails</div>
 }
 

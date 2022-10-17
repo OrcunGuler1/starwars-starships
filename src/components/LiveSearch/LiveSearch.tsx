@@ -32,7 +32,6 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   const [loading, setLoading] = useState(true)
 
   const dataAvailable = () => {
-    console.log('data available')
     return Object.values(results).some(arr => arr.length > 0)
   }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

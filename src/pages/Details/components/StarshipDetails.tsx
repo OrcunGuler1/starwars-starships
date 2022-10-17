@@ -1,5 +1,6 @@
+import { Starship } from '../../../types/types'
 
-const StarshipDetails = () => {
+const StarshipDetails = (starship: Starship) => {
   return <div>StarshipDetails</div>
 }
 

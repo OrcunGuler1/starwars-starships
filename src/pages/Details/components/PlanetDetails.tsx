@@ -1,5 +1,6 @@
+import { Planet } from '../../../types/types'
 
-const PlanetDetails = () => {
+const PlanetDetails = (planet: Planet) => {
   return <div>PlanetDetails</div>
 }
 
