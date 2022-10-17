@@ -1,10 +1,32 @@
-import { FC, useState } from 'react'
-import axiosInstance from '../../../axios'
-import { Film, Planet } from '../../../types/types'
+import { FC, useEffect, useState } from 'react'
+import { getCardDetails } from '../../../helpers/getCardDetails'
+import {
+  Film,
+  Person,
+  Planet,
+  Specie,
+  Starship,
+  Vehicle,
+} from '../../../types/types'
 import PersonCard from '../../People/components/PersonCard'
 import PlanetCard from '../../Planets/components/PlanetCard'
+const INITIAL_DATA: Details = {
+  people: [],
+  planets: [],
+  species: [],
+  starships: [],
+  vehicles: [],
+}
+export type Details = {
+  people: Person[]
+  planets: Planet[]
+  species: Specie[]
+  starships: Starship[]
+  vehicles: Vehicle[]
+}
 
 const FilmDetails: FC<Film> = film => {
+  const [details, setDetails] = useState(INITIAL_DATA)
   const {
     title,
     episode_id,
@@ -19,6 +41,14 @@ const FilmDetails: FC<Film> = film => {
     vehicles,
   } = film
 
+  
+  useEffect(() => {
+    getCardDetails(characters, setDetails)
+    getCardDetails(planets, setDetails)
+    getCardDetails(species, setDetails)
+    getCardDetails(starships, setDetails)
+    getCardDetails(vehicles, setDetails)
+  }, [])
   return (
     <section className="container mx-auto mt-20 text-white">
       <div className="flex w-full flex-col items-center justify-center gap-4">
@@ -41,8 +71,8 @@ const FilmDetails: FC<Film> = film => {
             Characters Featured
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            {characters.map(character => (
-              <PersonCard key={character} url={character} />
+            {details.people.map(character => (
+              <PersonCard key={character.name} {...character} />
             ))}
           </div>
         </div>
@@ -51,8 +81,8 @@ const FilmDetails: FC<Film> = film => {
             Planets Featured
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            {planets.map(planetUrl => (
-              <PlanetCard key={planetUrl} url={planetUrl} />
+            {details.planets.map(planet => (
+              <PlanetCard key={planet.name} {...planet} />
             ))}
           </div>
         </div>
