@@ -1,4 +1,11 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../axios'
 import { AvailableResources } from '../../constants'
@@ -6,15 +13,27 @@ import { resources } from '../../routes/routes'
 import { SearchResultsType } from '../../types/types'
 import SearchCard from './components/SearchCard'
 
+const INITIAL_SEARCH_RESULTS: SearchResultsType = {
+  films: [],
+  people: [],
+  planets: [],
+  species: [],
+  starships: [],
+  vehicles: [],
+}
+
 const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
   const navigate = useNavigate()
   const [ctr, setCtr] = useState(0)
-  const [results, setResults] = useState<SearchResultsType>()
+  const [results, setResults] = useState<SearchResultsType>(
+    INITIAL_SEARCH_RESULTS,
+  )
   const [focus, setFocus] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const dataAvailable = () => {
-    return results && Object.values(results).some(arr => arr.length > 0)
+    console.log('data available')
+    return Object.values(results).some(arr => arr.length > 0)
   }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true)
@@ -42,7 +61,7 @@ const LiveSearch: FC<LiveSearchProps> = ({ query, setQuery }) => {
 
   const handleSelect = (id: string, resource: AvailableResources) => {
     navigate(`/${resource.toLowerCase()}/${id}`)
-    setResults(undefined)
+    setResults(INITIAL_SEARCH_RESULTS)
     setFocus(false)
   }
 
