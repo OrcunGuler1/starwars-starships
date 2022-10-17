@@ -10,6 +10,9 @@ import {
 } from '../../../types/types'
 import PersonCard from '../../People/components/PersonCard'
 import PlanetCard from '../../Planets/components/PlanetCard'
+import SpecieCard from '../../Species/components/SpecieCard'
+import StarshipCard from '../../Starships/components/StarshipCard'
+import VehicleCard from '../../Vehicles/components/VehicleCard'
 const INITIAL_DATA: Details = {
   people: [],
   planets: [],
@@ -41,7 +44,6 @@ const FilmDetails: FC<Film> = film => {
     vehicles,
   } = film
 
-  
   useEffect(() => {
     getCardDetails(characters, setDetails)
     getCardDetails(planets, setDetails)
@@ -49,6 +51,7 @@ const FilmDetails: FC<Film> = film => {
     getCardDetails(starships, setDetails)
     getCardDetails(vehicles, setDetails)
   }, [])
+
   return (
     <section className="container mx-auto mt-20 text-white">
       <div className="flex w-full flex-col items-center justify-center gap-4">
@@ -92,8 +95,29 @@ const FilmDetails: FC<Film> = film => {
           </h2>
           <p className="text-center text-xl font-semibold">{opening_crawl}</p>
         </div>
-        <div>
+        <div className="flex flex-col items-center justify-center gap-4">
           <h2 className="pb-4 text-center text-2xl font-semibold">Species</h2>
+          <div className="mb-5 flex flex-wrap items-center justify-center gap-4">
+            {details.species.map(specie => (
+              <SpecieCard key={specie.name} {...specie} />
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <h2 className="pb-4 text-center text-2xl font-semibold">Starships</h2>
+          <div className="mb-5 flex flex-wrap items-center justify-center gap-4">
+            {details.starships.map(starship => (
+              <StarshipCard key={starship.name} {...starship} />
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <h2 className="pb-4 text-center text-2xl font-semibold">Vehicles</h2>
+          <div className="mb-5 flex flex-wrap items-center justify-center gap-4">
+            {details.vehicles.map(vehicle => (
+              <VehicleCard key={vehicle.name} {...vehicle} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
