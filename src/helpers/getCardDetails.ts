@@ -1,25 +1,21 @@
 import { uniqBy } from 'lodash'
 import { Dispatch, SetStateAction } from 'react'
 import axiosInstance from '../axios'
-import { Details } from '../pages/Details/components/FilmDetails'
 import { ResultsType } from '../types/types'
 import { getUrlPaths } from './getUrlPaths'
 
 export const getCardDetails = (
   characters: string[],
-  setDetails: Dispatch<SetStateAction<Details>>,
+  setDetails: Dispatch<SetStateAction<any>>,
 ) => {
   characters.forEach(character => {
     const { id, resource } = getUrlPaths(character)
     axiosInstance
       .get(`/${resource}/${id}`)
       .then((res: { data: ResultsType[] }) => {
-        setDetails(prev => ({
+        setDetails((prev: any) => ({
           ...prev,
-          [resource]: uniqBy(
-            [...prev[resource as keyof Details], res.data],
-            'name',
-          ),
+          [resource]: uniqBy([...prev[resource], res.data], 'name'),
         }))
       })
   })
