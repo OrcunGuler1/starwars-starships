@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useLoaderData } from 'react-router-dom'
 import { getCardDetails } from '../../../helpers/getCardDetails'
 import { getUrlPaths } from '../../../helpers/getUrlPaths'
@@ -28,7 +28,8 @@ type Details = {
   films: Film[]
   planets: Planet[]
 }
-const PersonDetails = () => {
+const PersonDetails: FC<Person> = props => {
+  const [details, setDetails] = useState<Details>(INITIAL_DATA)
   const {
     name,
     skin_color,
@@ -44,8 +45,7 @@ const PersonDetails = () => {
     vehicles,
     mass,
     url,
-  } = useLoaderData() as Person
-  const [details, setDetails] = useState<Details>(INITIAL_DATA)
+  } = props
   const { image } = useGetPersonImage(getUrlPaths(url).id)
   useEffect(() => {
     getCardDetails(species, setDetails)
